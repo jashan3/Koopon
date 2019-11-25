@@ -8,9 +8,11 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class PhotoUtil {
 
@@ -63,4 +65,35 @@ public class PhotoUtil {
         }
     }
 
+    public static boolean isFolderExist (Context context , String folderName){
+        File file = null;
+        String[] folders = null;
+
+        file =Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
+        folders = file.list();
+        if (folders!=null){
+            for(String str :folders){
+                if(str.equals(folderName)){
+                   return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static List<String> getSpecificImages (String CameraFolder){
+        ArrayList<String> f = null;
+        File[] listFile = null;
+        f =  new ArrayList<String>();
+        String absolutePath = Environment.getExternalStorageDirectory() + "/" + Environment.DIRECTORY_DCIM + "/"+CameraFolder;//사진 겔러리 위치
+        File file= new File(absolutePath);
+        if (file.isDirectory()) {
+            listFile = file.listFiles();
+            for (int i = 0; i < listFile.length; i++) {
+                f.add(listFile[i].getAbsolutePath());
+            }
+        }
+        return f;
+    }
 }

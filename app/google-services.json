@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "1012794357153",
+    "firebase_url": "https://koopon-8f36a.firebaseio.com",
+    "project_id": "koopon-8f36a",
+    "storage_bucket": "koopon-8f36a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1012794357153:android:48197bd6dc996fc3ecc7e0",
+        "android_client_info": {
+          "package_name": "com.han.koopon"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1012794357153-ko0thrhcj8rcj3kh4ffndqora0q3m02m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5FK22qhX2Unys7UJb2ncZTzsTPhrrtIE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1012794357153-ko0thrhcj8rcj3kh4ffndqora0q3m02m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

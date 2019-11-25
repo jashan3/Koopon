@@ -12,14 +12,43 @@
         app:useMaterialThemeColors="false"
         android:layout_centerVertical="true"/>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/rv_item_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/ripple_effect"
+        android:foreground="@drawable/ripple_effect"
+        android:orientation="horizontal"
         android:clickable="true"
         android:layout_toRightOf="@+id/rv_item_checkbox">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:layout_margin="2sp"
+            android:hint="이름">
 
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"/>
+        </com.google.android.material.textfield.TextInputLayout>
 
-    </RelativeLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.3"
+            android:layout_margin="2sp"
+            android:hint="날짜">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <ImageView
+            android:id="@+id/rv_item_thumnail"
+            android:layout_width="80dp"
+            android:layout_height="80dp"/>
+    </LinearLayout>
 </RelativeLayout>
