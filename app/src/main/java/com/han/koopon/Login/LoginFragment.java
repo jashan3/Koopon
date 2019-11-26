@@ -21,7 +21,10 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.han.koopon.Home.HomeFragment;
+import com.han.koopon.Main.MainFragment;
 import com.han.koopon.R;
+import com.han.koopon.dialog.kooponDialog;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -49,6 +52,8 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
         bindingViews(view);
+
+
         return view;
     }
     private void bindingViews( View view){
@@ -100,6 +105,11 @@ public class LoginFragment extends Fragment {
                             Log.d(TAG, "## signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
+
+                            getActivity().getSupportFragmentManager().beginTransaction()
+                                    .replace(R.id.mainFrame, MainFragment.newInstance() )
+                                    .addToBackStack(null)
+                                    .commit();
                         } else {
                             // If sign in fails, display a message to the user.
                             String err = task.getException().getMessage();
@@ -114,16 +124,6 @@ public class LoginFragment extends Fragment {
                     }
                 });
     };
-    private void validationLoginForm(String id,String password){
-        if (id == null || password == null){
-            Toast.makeText(getContext(), "아이디 또는 비밀번호는 빈칸일 수 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if(id.equals("") || password.equals("")) {
-            Toast.makeText(getContext(), "아이디 또는 비밀번호는 빈칸일 수 없습니다.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-    }
 
     //회원가입
     View.OnClickListener signInListner = (v)->{

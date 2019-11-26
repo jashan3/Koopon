@@ -9,8 +9,8 @@
     </style>
 
     <style name="BaseTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="android:statusBarColor">#ffffff</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:statusBarColor">@android:color/holo_blue_dark</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="TextLabel" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
@@ -25,7 +25,7 @@
 
     <style name="MyButton" parent="Widget.AppCompat.Button.Colored">
         <item name="android:layout_margin">0dip</item>
-        <item name="android:background">@android:color/holo_blue_dark</item>
+        <item name="android:backgroundTint">@android:color/holo_blue_dark</item>
         <item name="colorButtonNormal">@android:color/holo_blue_dark</item>
     </style>
 </resources>

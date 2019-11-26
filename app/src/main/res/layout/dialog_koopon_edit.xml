@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/round_backtground">
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/holo_blue_dark">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="쿠폰 추가"
+                android:textSize="24dp"
+                android:textColor="#ffffff"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"/>
+            <ImageView
+                android:id="@+id/close_btn"
+                android:cropToPadding="true"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_close_black_24dp"
+                android:tint="#ffffff"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2sp"
+        style="@style/TextLabel"
+        android:hint="제목">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/koopon_edit_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2sp"
+        style="@style/TextLabel"
+        android:hint="날짜">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/koopon_edit_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"/>
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <ImageView
+        android:id="@+id/koopon_imgv"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_margin="10sp"
+        android:foreground="@drawable/ripple_effect"
+        android:src="@drawable/ic_photo_album_black_24dp"/>
+
+    <Button
+        android:id="@+id/koopon_add_btn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:textColor="@android:color/white"
+        style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        android:text="추가"/>
+</LinearLayout>
