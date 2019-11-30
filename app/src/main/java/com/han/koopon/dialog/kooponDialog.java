@@ -40,9 +40,7 @@ public class kooponDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_koopon_edit);
         getWindow().getDecorView().setBackgroundResource(android.R.color.transparent);
-
         bindView();
-
     }
 
 
@@ -52,7 +50,6 @@ public class kooponDialog extends Dialog {
         koopon_edit_date = findViewById(R.id.koopon_edit_date);
         koopon_imgv = findViewById(R.id.koopon_imgv);
         koopon_add_btn = findViewById(R.id.koopon_add_btn);
-
 
 
         //이미지 불러오기

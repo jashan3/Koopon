@@ -1,5 +1,6 @@
 package com.han.koopon.Login;
 
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
@@ -24,6 +25,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.han.koopon.Home.HomeFragment;
 import com.han.koopon.Main.MainFragment;
 import com.han.koopon.R;
+import com.han.koopon.Util.PFUtil;
 import com.han.koopon.dialog.kooponDialog;
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
@@ -106,10 +108,12 @@ public class LoginFragment extends Fragment {
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(user);
 
+                            getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             getActivity().getSupportFragmentManager().beginTransaction()
                                     .replace(R.id.mainFrame, MainFragment.newInstance() )
                                     .addToBackStack(null)
                                     .commit();
+                            PFUtil.savePreference(getContext(),PFUtil.AUTO_LOGIN_ID,user.getEmail());
                         } else {
                             // If sign in fails, display a message to the user.
                             String err = task.getException().getMessage();

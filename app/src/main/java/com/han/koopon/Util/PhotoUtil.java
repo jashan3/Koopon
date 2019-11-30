@@ -15,20 +15,15 @@ import java.util.Comparator;
 import java.util.List;
 
 public class PhotoUtil {
-
     String strImage;
-
     public ArrayList<Listitem> getAllPhotoPathList(Context context) {
         ArrayList<Listitem> photos = new ArrayList<>();
-
         Uri uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-
         String[] projection = {
                 MediaStore.Images.Media._ID,
                 MediaStore.MediaColumns.DATA,
                 MediaStore.Images.Media.DATA,
         };
-
         Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
 
         // 사진 아이디
