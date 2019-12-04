@@ -38,12 +38,12 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
 
     //var
     private Context context;
-    private List<CouponVO> list;
+    private List<Coupon> list;
     private View.OnClickListener itemClickListner;
     private View.OnLongClickListener itemLongClickListner;
 
     //construct
-    public MainRecyclerview(Context context, List<CouponVO> list, View.OnClickListener itemClickListner, View.OnLongClickListener itemLongClickListner) {
+    public MainRecyclerview(Context context, List<Coupon> list, View.OnClickListener itemClickListner, View.OnLongClickListener itemLongClickListner) {
         this.context = context;
         this.list = list;
         this.itemClickListner = itemClickListner;
@@ -64,9 +64,9 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
         if (list.isEmpty()){
             Logger.e("empty list");
         } else {
-            holder.item_content1.setText(list.get(position).getCoupon_title());
-            holder.item_content2.setText(list.get(position).getDate());
-            holder.rv_item_checkbox.setChecked(list.get(position).isUse());
+            holder.item_content1.setText(list.get(position).coupon_title);
+            holder.item_content2.setText(list.get(position).date);
+            holder.rv_item_checkbox.setChecked(list.get(position).isUse);
 //            holder.item_imageview.setImageBitmap();
         }
     }
@@ -74,6 +74,9 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
     @Override
     public int getItemCount() {
         return list.size();
+    }
+    public void updateList( List<Coupon> list){
+        this.list = list;
     }
 
     private Bitmap stringToBitmap(String path){
@@ -87,7 +90,7 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
         return null;
     }
 
-    public void updateItems(List <CouponVO>list){
+    public void updateItems(List <Coupon>list){
         this.list = list;
         notifyDataSetChanged();
     }

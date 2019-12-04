@@ -20,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.han.koopon.Home.SQL.AppDatabase;
+
 import com.han.koopon.R;
 import com.han.koopon.Util.PermissionRequest;
 import com.han.koopon.Util.PhotoUtil;

@@ -2,7 +2,11 @@ package com.han.koopon.Main;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +16,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.loader.app.LoaderManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,10 +25,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.han.koopon.Home.SQL.Coupon;
 import com.han.koopon.R;
 import com.han.koopon.Util.PFUtil;
 import com.han.koopon.Util.PhotoUtil;
+import com.han.koopon.Util.StringUtil;
 import com.han.koopon.dialog.kooponDialog;
 import com.orhanobut.logger.Logger;
 
@@ -32,11 +37,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static android.app.Activity.RESULT_CANCELED;
+import static android.app.Activity.RESULT_OK;
+
 
 public class MainFragment extends Fragment {
     //var
     private static final String folderName = "바코드";
-    private List<CouponVO> couponList;
+    private List<Coupon> couponList;
     private String userID;
 
     //permission
@@ -48,9 +56,14 @@ public class MainFragment extends Fragment {
     private RecyclerView rv;
 
     //listener
+    MainRecyclerview adapter;
     View.OnClickListener itemClickListner;
     View.OnLongClickListener itemLongClickListner;
 
+    //firebase
+    private final static String ROOT = "koopon";
+    private final static String TYPE1 = "Coupon";
+    DatabaseReference mDatabase = FirebaseDatabase.getInstance().getReference();
 
     public static MainFragment newInstance() {
         return new MainFragment();
@@ -58,9 +71,6 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onAttach(@NonNull Context context) {
-        userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
-        Logger.i("id : %s",userID);
-//        initFirebase("sang9163");
 
 //        CouponVO couponVO = new CouponVO();
 //        couponVO.setCoupon_title("sdfgsdfgdsfgsdfgg 111111111.");
@@ -70,6 +80,10 @@ public class MainFragment extends Fragment {
 //        couponVO.setUse(false);
 //
 //        writeFirebase(couponVO);
+
+        couponList = new ArrayList();
+        userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
+        userID = StringUtil.emailToStringID(userID);
 
         boolean isFolderExist =  PhotoUtil.isFolderExist(getContext(),folderName);
         if (isFolderExist){
@@ -82,42 +96,41 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        couponList = new ArrayList();
         View view =inflater.inflate(R.layout.main_fragment, container, false);
         bindView(view);
 
+        Logger.i("id : %s",userID);
+        selectOnceFB(userID);
         return  view;
     }
 
     private void bindView (View view){
         rv = view.findViewById(R.id.main_rv);
 
-        MainRecyclerview adapter = new MainRecyclerview(getContext(),couponList,itemClickListner,itemLongClickListner);
+        adapter = new MainRecyclerview(getContext(),couponList,itemClickListner,itemLongClickListner);
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(lm);
         rv.setAdapter(adapter);
 
         add_btn  = view.findViewById(R.id.add_btn);
         add_btn.setOnClickListener((v)->{
-            new kooponDialog(getContext()).show();
+            kooponDialog.newInstance().show(getFragmentManager(),"");
         });
     }
 
     private void initFirebase (String userid){
-        DatabaseReference mDatabase;
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        mDatabase.child("koopon").child("Coupon").child(userid);
+        mDatabase.child("koopon").child(userid).child("Coupon").child(userid);
         mDatabase.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                CouponVO post = dataSnapshot.getValue(CouponVO.class);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Coupon post = snapshot.child(userid).child("Coupon").getValue(Coupon.class);
+                    try {
+                        Logger.i( post.coupon_title);
 
-                if(dataSnapshot.exists()){
-                    Logger.i("success");
-
-                }
-                else {
-                    Logger.e("not exists");
+                    }catch (Exception e){
+                        Logger.e(e.toString());
+                    }
                 }
             }
 
@@ -128,20 +141,29 @@ public class MainFragment extends Fragment {
         });
     }
 
-    private void writeFirebase(CouponVO couponVO){
-        DatabaseReference mDatabase;
-        mDatabase = FirebaseDatabase.getInstance().getReference();
-        String key = mDatabase.child("koopon").child("sang9163").child("Coupon").push().getKey();
+    public void  selectOnceFB(String userID) {
+        mDatabase.child(ROOT).child(userID).child(TYPE1).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Coupon post = snapshot.getValue(Coupon.class);
+                    couponList.add(post);
+                }
+                adapter.updateItems(couponList);
+                adapter.notifyDataSetChanged();
+            }
 
-        Map<String, Object> postValues = couponVO.toMap();
-        Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/koopon/sang9163/Coupon/" + key, postValues);
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
 
-        mDatabase.updateChildren(childUpdates);
+            }
+        });
     }
 
 
 }
+
+
 //        CouponVO couponVO = new CouponVO();
 //        couponVO.setCoupon_userID(id);
 //        couponVO.setCoupon_title("sdfgsdfgdsfgsdfgg 111111111.");

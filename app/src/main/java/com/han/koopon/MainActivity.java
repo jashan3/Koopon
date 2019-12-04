@@ -1,13 +1,16 @@
 package com.han.koopon;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -54,10 +57,26 @@ public class MainActivity extends AppCompatActivity {
         else {
             getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, MainFragment.newInstance()).commit();
         }
-
-
     }
 
 
-
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//        Logger.i("onActivityResult "+requestCode +","+requestCode);
+//        if (requestCode == 1000 && resultCode == RESULT_OK) {
+//            try {
+//                Uri uri = data.getData();
+//
+////                String struri =  PhotoUtil.getRealPathFromURI_API19(this,uri);
+//                Logger.i(uri.getPath());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        if (requestCode == 1000 && resultCode == RESULT_CANCELED) {
+//            Toast.makeText(this, "선택 취소", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }
