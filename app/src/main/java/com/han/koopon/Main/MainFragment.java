@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -45,7 +46,7 @@ public class MainFragment extends Fragment {
     //var
     private static final String folderName = "바코드";
     private List<Coupon> couponList;
-    private String userID;
+    public String userID;
 
     //permission
     private  String[] permisionList = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE };
@@ -54,6 +55,7 @@ public class MainFragment extends Fragment {
     //widget
     private ImageView add_btn;
     private RecyclerView rv;
+    private ProgressBar main_progress_bar;
 
     //listener
     MainRecyclerview adapter;
@@ -106,7 +108,7 @@ public class MainFragment extends Fragment {
 
     private void bindView (View view){
         rv = view.findViewById(R.id.main_rv);
-
+        main_progress_bar = view.findViewById(R.id.main_progress_bar);
         adapter = new MainRecyclerview(getContext(),couponList,itemClickListner,itemLongClickListner);
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(lm);
@@ -142,6 +144,7 @@ public class MainFragment extends Fragment {
     }
 
     public void  selectOnceFB(String userID) {
+        main_progress_bar.setVisibility(View.VISIBLE);
         mDatabase.child(ROOT).child(userID).child(TYPE1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -151,6 +154,7 @@ public class MainFragment extends Fragment {
                 }
                 adapter.updateItems(couponList);
                 adapter.notifyDataSetChanged();
+                main_progress_bar.setVisibility(View.GONE);
             }
 
             @Override

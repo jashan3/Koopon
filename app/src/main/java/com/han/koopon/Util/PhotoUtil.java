@@ -2,6 +2,8 @@ package com.han.koopon.Util;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.DocumentsContract;
@@ -9,7 +11,13 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.orhanobut.logger.Logger;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -107,5 +115,144 @@ public class PhotoUtil {
         }
         cursor.close();
         return filePath;
+    }
+
+    //Uri -> Bitmap
+    public static Bitmap getThumbnailToURI(Context context, Uri selectedImage){
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        Cursor cursor = context.getContentResolver().query(selectedImage,filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
+        return BitmapFactory.decodeFile(picturePath);
+    }
+
+    //썸네일 path리턴함
+    public static List<String> getImageThumnail(Context context){
+        // First request thumbnails what you want
+        List<String> list = null;
+        String[] projection = new String[] {MediaStore.Images.Thumbnails._ID, MediaStore.Images.Thumbnails.IMAGE_ID};
+        Cursor thumbnails = context.getContentResolver().query(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, projection, null, null, null);
+
+        // Then walk thru result and obtain imageId from records
+        for (thumbnails.moveToFirst(); !thumbnails.isAfterLast(); thumbnails.moveToNext()) {
+            String imageId = thumbnails.getString(thumbnails.getColumnIndex(MediaStore.Images.Thumbnails.IMAGE_ID));
+
+            // Request image related to this thumbnail
+            String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+            Cursor images =  context.getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, filePathColumn, MediaStore.Images.Media._ID + "=?", new String[] {imageId}, null);
+
+            if (images != null && images.moveToFirst()) {
+                // Your file-path will be here
+                String filePath = images.getString(images.getColumnIndex(filePathColumn[0]));
+                list.add(filePath);
+            }
+
+        }
+        return list;
+    }
+
+    //    private void saveFile() {
+//        ContentValues values = new ContentValues();
+//        values.put(MediaStore.Images.Media.DISPLAY_NAME, "image_1024.JPG");
+//        values.put(MediaStore.Images.Media.MIME_TYPE, "image/*");
+//
+//        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.Q) {
+//            values.put(MediaStore.Images.Media.IS_PENDING, 1);
+//        }
+//
+//        ContentResolver contentResolver = getContentResolver();
+//        Uri item = contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+//
+//        try {
+//            ParcelFileDescriptor pdf = contentResolver.openFileDescriptor(item, "w", null);
+//
+//            if (pdf == null) {
+//                Log.d("asdf", "null");
+//            } else {
+//                String str = "heloo";
+//                byte[] strToByte = str.getBytes();
+//                FileOutputStream fos = new FileOutputStream(pdf.getFileDescriptor());
+//                fos.write(strToByte);
+//                fos.close();
+//
+//                if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.Q) {
+//                    values.clear();
+//                    values.put(MediaStore.Images.Media.IS_PENDING, 0);
+//                    contentResolver.update(item, values, null, null);
+//                }
+//
+//            }
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+
+    private void readAllFile(Context context) {
+        Uri externalUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+        String[] projection = new String[]{
+                MediaStore.Images.Media._ID,
+                MediaStore.Images.Media.DISPLAY_NAME,
+                MediaStore.Images.Media.MIME_TYPE
+        };
+        Cursor cursor = context.getContentResolver().query(externalUri, projection, null, null, null);
+        if (cursor == null || !cursor.moveToFirst()) {
+            Logger.e("null or empty");
+            return;
+        }
+        do {
+            String contentUrl = externalUri.toString() + "/" + cursor.getString(0);
+
+            try {
+                InputStream is = context.getContentResolver().openInputStream(Uri.parse(contentUrl));
+                int data = 0;
+                StringBuilder sb = new StringBuilder();
+
+                while ((data = is.read()) != -1) {
+                    sb.append((char) data);
+                }
+
+                is.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        } while (cursor.moveToNext());
+    }
+
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri,  proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
+    public static Bitmap getBitmap(String path) {
+        try {
+            Bitmap bitmap = null;
+            File f = new File(path);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+            bitmap = BitmapFactory.decodeStream(new FileInputStream(f), null, options);
+            return bitmap;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }
