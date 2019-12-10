@@ -10,6 +10,8 @@ import com.orhanobut.logger.PrettyFormatStrategy;
 public class Config extends Application {
     public final static String AUTO_LOGIN_ID = "AUTO_LOGIN_ID";
 
+    public final static String INTENT_EXTRA_TITLE = "INTENT_EXTRA_TITLE";
+    public final static String INTENT_EXTRA_CURRENT_COUNT = "INTENT_EXTRA_CURRENT_COUNT";
     @Override
     public void onCreate() {
         super.onCreate();

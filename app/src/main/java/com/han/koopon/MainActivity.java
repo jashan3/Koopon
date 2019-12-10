@@ -41,8 +41,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private FrameLayout mainFrame;
 
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

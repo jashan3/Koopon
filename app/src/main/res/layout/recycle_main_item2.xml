@@ -6,7 +6,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    app:ignore="NamespaceTypo">
+    app:ignore="NamespaceTypo"
+    android:transitionName="transition_item">
 
     <androidx.cardview.widget.CardView
         android:layout_margin="5dp"
@@ -46,7 +47,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_below="@id/item_title1"
-                        style="@style/text_body"/>
+                        style="@style/text_body" />
 
                 </RelativeLayout>
 

@@ -1,15 +1,20 @@
 package com.han.koopon.Main;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -17,6 +22,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.han.koopon.Config;
+import com.han.koopon.MainDetail.MainDetailActivity;
 import com.han.koopon.R;
 import com.han.koopon.Util.PhotoUtil;
 import com.orhanobut.logger.Logger;
@@ -25,19 +32,32 @@ import java.io.File;
 import java.util.List;
 
 public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.MainHolder> {
+    private SparseBooleanArray mSelectedItems = new SparseBooleanArray(0);
+
 
     //inner class
     class MainHolder extends RecyclerView.ViewHolder {
+        View view;
         TextView item_content1;
         TextView item_content2;
         ImageView item_imageview;
         CheckBox rv_item_checkbox;
+
         public MainHolder(@NonNull View itemView) {
             super(itemView);
-            item_content1 = itemView.findViewById(R.id.item_content1);
-            item_content2 = itemView.findViewById(R.id.item_content2);
-            item_imageview = itemView.findViewById(R.id.item_imageview);
-            rv_item_checkbox = itemView.findViewById(R.id.rv_item_checkbox);
+            this.view = itemView;
+            item_content1 = view.findViewById(R.id.item_content1);
+            item_content2 = view.findViewById(R.id.item_content2);
+            item_imageview = view.findViewById(R.id.item_imageview);
+            rv_item_checkbox = view.findViewById(R.id.rv_item_checkbox);
+        }
+
+        public void setListner(CompoundButton.OnCheckedChangeListener listner){
+            rv_item_checkbox.setOnCheckedChangeListener(listner);
+        }
+
+        public void setClickListener(View.OnClickListener listener){
+            view.setOnClickListener(listener);
         }
     }
 
@@ -60,6 +80,20 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
     public MainHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.recycle_main_item2,parent,false);
         MainHolder mh = new MainHolder(view);
+        mh.setListner((CompoundButton compoundButton, boolean b) ->{
+            if (b){
+                Logger.i("Check");
+            } else {
+                Logger.i("unCheck");
+            }
+        });
+//        mh.setClickListener(v->{
+//            Logger.i("ccc");
+//            Intent intent = new Intent(context, MainDetailActivity.class);
+//            intent.putExtra(Config.INTENT_EXTRA_TITLE,"INTENT_EXTRA_TITLE");
+//            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, v, "transition_item");
+//            context.startActivity(intent, options.toBundle());
+//        });
         return mh;
     }
 
@@ -71,18 +105,17 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
             Logger.e("empty list");
         } else {
             Logger.i("coopon list == > %s",list.get(position).CouponToString());
+            String imgurl = list.get(position).imgURL;
 
             try {
-                String imgurl = "content:/"+list.get(position).imgURL;
                 Logger.i("imgurl == > %s" ,imgurl);
-
-                Uri uri = Uri.parse(imgurl);
-                File file = new File(PhotoUtil.getRealPathFromURI_API19(context,uri));
+                File file = new File(imgurl);
                 if (file.exists()){
-                    Logger.i("oo 잇음");
+                    holder.item_imageview.setImageURI(Uri.parse(imgurl));
                 }
-                Bitmap bitmap = PhotoUtil.getBitmap(PhotoUtil.getRealPathFromURI_API19(context,uri));
-                holder.item_imageview.setImageBitmap(bitmap);
+                else {
+                    holder.item_imageview.setImageResource(R.drawable.not_found_img);
+                }
             }catch (Exception e){
                 Logger.e("MainRecyclerview :" + e.toString());
                 holder.item_imageview.setImageResource(R.drawable.not_found_img);
@@ -91,7 +124,14 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
             holder.item_content1.setText(list.get(position).coupon_title);
             holder.item_content2.setText(list.get(position).date);
             holder.rv_item_checkbox.setChecked(list.get(position).isUse);
-//            holder.item_imageview.setImageBitmap();
+            holder.view.setOnClickListener(v->{
+                Logger.i("ccc");
+                Intent intent = new Intent(context, MainDetailActivity.class);
+                intent.putExtra(Config.INTENT_EXTRA_TITLE,list.get(position).coupon_title);
+                intent.putExtra(Config.INTENT_EXTRA_CURRENT_COUNT,imgurl);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, v, "transition_item");
+                context.startActivity(intent, options.toBundle());
+            });
         }
     }
 
@@ -119,49 +159,5 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
         notifyDataSetChanged();
     }
 
-
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static Uri[] getSafUris (Context context, File file) {
-
-        Uri[] uri = new Uri[2];
-        String scheme = "content";
-        String authority = "com.android.externalstorage.documents";
-
-        // Separate each element of the File path
-        // File format: "/storage/XXXX-XXXX/sub-folder1/sub-folder2..../filename"
-        // (XXXX-XXXX is external removable number
-        String[] ele = file.getPath().split(File.separator);
-        //  ele[0] = not used (empty)
-        //  ele[1] = not used (storage name)
-        //  ele[2] = storage number
-        //  ele[3 to (n-1)] = folders
-        //  ele[n] = file name
-
-        // Construct folders strings using SAF format
-        StringBuilder folders = new StringBuilder();
-        if (ele.length > 4) {
-            folders.append(ele[3]);
-            for (int i = 4; i < ele.length - 1; ++i) folders.append("%2F").append(ele[i]);
-        }
-
-        String common = ele[2] + "%3A" + folders.toString();
-
-        // Construct TREE Uri
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme(scheme);
-        builder.authority(authority);
-        builder.encodedPath("/tree/" + common);
-        uri[0] = builder.build();
-
-        // Construct DOCUMENT Uri
-        builder = new Uri.Builder();
-        builder.scheme(scheme);
-        builder.authority(authority);
-        if (ele.length > 4) common = common + "%2F";
-        builder.encodedPath("/document/" + common + file.getName());
-        uri[1] = builder.build();
-
-        return uri;
-    }
 
 }
