@@ -10,8 +10,12 @@ import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,7 +37,11 @@ import com.han.koopon.Util.StringUtil;
 import com.han.koopon.dialog.kooponDialog;
 import com.orhanobut.logger.Logger;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,6 +64,7 @@ public class MainFragment extends Fragment {
     private ImageView add_btn;
     private RecyclerView rv;
     private ProgressBar main_progress_bar;
+    private  Spinner spinner;
 
     //listener
     MainRecyclerview adapter;
@@ -80,7 +89,6 @@ public class MainFragment extends Fragment {
 //        couponVO.setImgURL("moimage");
 //        couponVO.setDate("날짜");
 //        couponVO.setUse(false);
-//
 //        writeFirebase(couponVO);
 
         couponList = new ArrayList();
@@ -102,7 +110,8 @@ public class MainFragment extends Fragment {
         bindView(view);
 
         Logger.i("id : %s",userID);
-        selectOnceFB(userID);
+//        selectOnceFB(userID);
+        selectAlwaysFB(userID);
         return  view;
     }
 
@@ -118,6 +127,37 @@ public class MainFragment extends Fragment {
         add_btn.setOnClickListener((v)->{
             kooponDialog.newInstance().show(getFragmentManager(),"");
         });
+
+        //Spinner객체 생성
+        spinner= view.findViewById(R.id.spinner);
+        ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.spinnerArray, R.layout.layout_spinner_item);
+        spinnerAdapter.setDropDownViewResource(R.layout.layout_spinner_item);
+        spinner.setAdapter(spinnerAdapter);
+
+        //spinner 이벤트 리스너
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                  Logger.i("postion : %d",spinner.getSelectedItemPosition());
+                switch (spinner.getSelectedItemPosition()){
+                    case 0:
+                        Collections.reverse(couponList);
+                        adapter.updateItems(couponList);
+                        adapter.notifyDataSetChanged();
+                        break;
+
+                    case 1:
+                        Collections.reverse(couponList);
+                        adapter.updateItems(couponList);
+                        adapter.notifyDataSetChanged();
+                        break;
+                }
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            }
+        });
+
     }
 
     private void initFirebase (String userid){
@@ -164,6 +204,49 @@ public class MainFragment extends Fragment {
         });
     }
 
+    public void  selectAlwaysFB(String userID) {
+        main_progress_bar.setVisibility(View.VISIBLE);
+        mDatabase.child(ROOT).child(userID).child(TYPE1).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                couponList.clear();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Coupon post = snapshot.getValue(Coupon.class);
+                    couponList.add(post);
+                }
+                Collections.sort(couponList, new Comparator<Coupon>() {
+                    @Override
+                    public int compare(Coupon coupon1, Coupon coupon2) {
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+                        Date date1 = null;
+                        Date date2 = null;
+                        try {
+                            date1 = format.parse(coupon1.date);
+                            date2 = format.parse(coupon2.date);
+                        }catch (Exception e){
+                            Logger.e("casting error");
+                        }
+
+                        if (date1.compareTo(date2) > 0) {
+                            return 1;
+                        } else if (date1.compareTo(date2) < 0) {
+                            return -1;
+                        } else {
+                            return 0;
+                        }
+                    }
+                });
+                adapter.updateItems(couponList);
+                adapter.notifyDataSetChanged();
+                main_progress_bar.setVisibility(View.GONE);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                main_progress_bar.setVisibility(View.GONE);
+            }
+        });
+    }
 
 }
 

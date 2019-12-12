@@ -6,8 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@android:color/transparent"
-    app:ignore="NamespaceTypo"
-    android:transitionName="transition_item">
+    app:ignore="NamespaceTypo">
 
     <androidx.cardview.widget.CardView
         android:layout_margin="5dp"
@@ -76,7 +75,8 @@
                     android:layout_height="match_parent"
                     android:layout_weight="0.2"
                     android:src="@drawable/not_found_img"
-                    android:layout_marginRight="10dp"/>
+                    android:layout_marginRight="10dp"
+                    android:transitionName="transition_item"/>
             </LinearLayout>
 
 

@@ -33,8 +33,6 @@ import java.util.List;
 
 public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.MainHolder> {
     private SparseBooleanArray mSelectedItems = new SparseBooleanArray(0);
-
-
     //inner class
     class MainHolder extends RecyclerView.ViewHolder {
         View view;
@@ -80,13 +78,6 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
     public MainHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.recycle_main_item2,parent,false);
         MainHolder mh = new MainHolder(view);
-        mh.setListner((CompoundButton compoundButton, boolean b) ->{
-            if (b){
-                Logger.i("Check");
-            } else {
-                Logger.i("unCheck");
-            }
-        });
 //        mh.setClickListener(v->{
 //            Logger.i("ccc");
 //            Intent intent = new Intent(context, MainDetailActivity.class);
@@ -125,12 +116,25 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
             holder.item_content2.setText(list.get(position).date);
             holder.rv_item_checkbox.setChecked(list.get(position).isUse);
             holder.view.setOnClickListener(v->{
-                Logger.i("ccc");
                 Intent intent = new Intent(context, MainDetailActivity.class);
                 intent.putExtra(Config.INTENT_EXTRA_TITLE,list.get(position).coupon_title);
                 intent.putExtra(Config.INTENT_EXTRA_CURRENT_COUNT,imgurl);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, v, "transition_item");
                 context.startActivity(intent, options.toBundle());
+            });
+
+            holder.view.setOnLongClickListener(v->{
+
+                return true;
+            });
+
+            holder.rv_item_checkbox.setOnCheckedChangeListener((CompoundButton compoundButton, boolean b) ->{
+                if (b){
+                    Logger.i("Check");
+//                    FireBaseQuery.insertFB(list.get(position),"sang9163");
+                } else {
+                    Logger.i("unCheck");
+                }
             });
         }
     }

@@ -26,7 +26,7 @@
                         android:textColor="@android:color/white"
                         android:textAlignment="center"
                         android:gravity="center"
-                        android:transitionName="transition_item"/>
+                        />
                 </RelativeLayout>
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
@@ -38,5 +38,6 @@
         android:id="@+id/detail_img"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/appbar"/>
+        android:layout_below="@id/appbar"
+        android:transitionName="transition_item"/>
 </RelativeLayout>

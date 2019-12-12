@@ -23,12 +23,13 @@ public class FireBaseQuery {
 
     public static void insertFB(Coupon coupon,String userID){
         String key = mDatabase.child(ROOT).child(userID).child(TYPE1).push().getKey();
+        Logger.i("key %s",key);
         Map<String, Object> postValues = coupon.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/"+ROOT+"/"+userID+"/"+TYPE1+"/" + key, postValues);
+        childUpdates.put("/"+ROOT+"/"+userID+"/"+TYPE1+"/" +key, postValues);
         mDatabase.updateChildren(childUpdates)
                  .addOnSuccessListener((Void aVoid) ->{
-
+                    Logger.i("insertFB success");
                  });
     }
 
