@@ -29,6 +29,7 @@ import com.han.koopon.Util.Listitem;
 import com.han.koopon.Util.PFUtil;
 import com.han.koopon.Util.PermissionRequest;
 import com.han.koopon.Util.PhotoUtil;
+import com.han.koopon.Util.StringUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -55,9 +56,26 @@ public class MainActivity extends AppCompatActivity {
         else {
             getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, MainFragment.newInstance()).commit();
         }
+
     }
 
+    private long backKeyPressedTime = 0;
+    private Toast toast;
 
+    @Override
+    public void onBackPressed() {
+        if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+
+        if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            finish();
+            toast.cancel();
+        }
+    }
 //    @Override
 //    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
 //        super.onActivityResult(requestCode, resultCode, data);

@@ -11,7 +11,11 @@ public class Config extends Application {
     public final static String AUTO_LOGIN_ID = "AUTO_LOGIN_ID";
 
     public final static String INTENT_EXTRA_TITLE = "INTENT_EXTRA_TITLE";
+    public final static String INTENT_EXTRA_DATE = "INTENT_EXTRA_DATE";
+    public final static String INTENT_EXTRA_BODY= "INTENT_EXTRA_BODY";
     public final static String INTENT_EXTRA_CURRENT_COUNT = "INTENT_EXTRA_CURRENT_COUNT";
+
+
     @Override
     public void onCreate() {
         super.onCreate();

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
@@ -20,12 +21,15 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.han.koopon.Config;
 import com.han.koopon.MainDetail.MainDetailActivity;
 import com.han.koopon.R;
+import com.han.koopon.Util.PFUtil;
 import com.han.koopon.Util.PhotoUtil;
+import com.han.koopon.Util.StringUtil;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -64,6 +68,7 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
     private List<Coupon> list;
     private View.OnClickListener itemClickListner;
     private View.OnLongClickListener itemLongClickListner;
+    private String userID;
 
     //construct
     public MainRecyclerview(Context context, List<Coupon> list, View.OnClickListener itemClickListner, View.OnLongClickListener itemLongClickListner) {
@@ -71,6 +76,8 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
         this.list = list;
         this.itemClickListner = itemClickListner;
         this.itemLongClickListner = itemLongClickListner;
+        userID = PFUtil.getPreferenceString(context,PFUtil.AUTO_LOGIN_ID);
+        userID = StringUtil.emailToStringID(userID);
     }
 
     @NonNull
@@ -117,8 +124,12 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
             holder.rv_item_checkbox.setChecked(list.get(position).isUse);
             holder.view.setOnClickListener(v->{
                 Intent intent = new Intent(context, MainDetailActivity.class);
-                intent.putExtra(Config.INTENT_EXTRA_TITLE,list.get(position).coupon_title);
+                Coupon cp = null;
+                cp = list.get(position);
+                intent.putExtra(Config.INTENT_EXTRA_TITLE,cp.coupon_title);
                 intent.putExtra(Config.INTENT_EXTRA_CURRENT_COUNT,imgurl);
+                intent.putExtra(Config.INTENT_EXTRA_DATE,cp.date);
+                intent.putExtra(Config.INTENT_EXTRA_BODY,cp.coupon_body);
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, v, "transition_item");
                 context.startActivity(intent, options.toBundle());
             });
@@ -128,12 +139,25 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
                 return true;
             });
 
+            //체크박스
+            if (list.get(position).isUse){
+                int color = R.color.trangray;
+                holder.view.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
+            }
             holder.rv_item_checkbox.setOnCheckedChangeListener((CompoundButton compoundButton, boolean b) ->{
                 if (b){
-                    Logger.i("Check");
-//                    FireBaseQuery.insertFB(list.get(position),"sang9163");
+                    Coupon c = null;
+                    c = list.get(position);
+                    c.isUse = true;
+                    FireBaseQuery.insertFBNeedKey(StringUtil.base64(c.imgURL),c,userID);
+                    int color = R.color.trangray;
+                    holder.view.setForeground(new ColorDrawable(ContextCompat.getColor(context, color)));
                 } else {
-                    Logger.i("unCheck");
+                    Coupon c = null;
+                    c = list.get(position);
+                    c.isUse = false;
+                    FireBaseQuery.insertFBNeedKey(StringUtil.base64(c.imgURL),c,userID);
+                    holder.view.setForeground(null);
                 }
             });
         }

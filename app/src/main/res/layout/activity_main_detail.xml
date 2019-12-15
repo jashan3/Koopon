@@ -19,25 +19,58 @@
                     android:layout_height="match_parent">
                     <TextView
                         android:id="@+id/detail_title"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:text="tiltlel"
                         android:textSize="24dp"
                         android:textColor="@android:color/white"
-                        android:textAlignment="center"
-                        android:gravity="center"
-                        />
+                        android:gravity="center" />
+
+                    <TextView
+                        android:id="@+id/detail_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:text="date"
+                        android:textSize="24dp"
+                        android:textColor="@android:color/white"
+                        android:layout_alignParentEnd="true"
+                        android:layout_marginEnd="10dp"
+                        android:gravity="center" />
+
                 </RelativeLayout>
             </androidx.appcompat.widget.Toolbar>
         </com.google.android.material.appbar.CollapsingToolbarLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
 
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_below="@id/appbar">
 
     <ImageView
         android:id="@+id/detail_img"
+        android:layout_margin="10dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/appbar"
+        android:layout_height="0dp"
+        android:layout_weight="0.8"
         android:transitionName="transition_item"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.01"
+        android:text="메모"
+        style="@style/text_title"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="메모"
+        android:layout_weight="0.19"
+        android:padding="10sp"
+        android:background="@drawable/top_shadow"
+        style="@style/text_body"/>
+</LinearLayout>
+
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.han.koopon.dialog;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -43,6 +45,13 @@ public class kooponDialog extends DialogFragment {
 
     public static kooponDialog newInstance(){
         return new kooponDialog();
+    }
+
+    @NonNull
+    @Override
+    public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+        getActivity().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+        return super.onCreateDialog(savedInstanceState);
     }
 
     @Nullable
@@ -129,7 +138,8 @@ public class kooponDialog extends DialogFragment {
 
             String userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
             userID = StringUtil.emailToStringID(userID);
-            FireBaseQuery.insertFB(coupon,userID);
+//            FireBaseQuery.insertFB(coupon,userID);
+            FireBaseQuery.insertFBNeedKey( StringUtil.base64(uriPath),coupon,userID);
             dismiss();
         });
     }

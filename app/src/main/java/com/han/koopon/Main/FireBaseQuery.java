@@ -33,6 +33,14 @@ public class FireBaseQuery {
                  });
     }
 
+    public static void insertFBNeedKey(String key,Coupon coupon,String userID){
+        Logger.i("암호화된 key %s",key);
+        Map<String, Object> postValues = coupon.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/"+ROOT+"/"+userID+"/"+TYPE1+"/" +key, postValues);
+        mDatabase.updateChildren(childUpdates);
+    }
+
     public static void  selectOnceFB(String userID) {
         mDatabase.child(ROOT).child(userID).child(TYPE1).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

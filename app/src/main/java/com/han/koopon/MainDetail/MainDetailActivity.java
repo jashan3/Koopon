@@ -19,7 +19,7 @@ public class MainDetailActivity extends AppCompatActivity {
 
 
     private ImageView detail_img;
-    private TextView detail_title;
+    private TextView detail_title,detail_date;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -32,16 +32,22 @@ public class MainDetailActivity extends AppCompatActivity {
     private void bindView(){
         detail_title =  findViewById(R.id.detail_title);
         detail_img = findViewById(R.id.detail_img);
+        detail_date = findViewById(R.id.detail_date);
     }
 
     private void getIntentData(){
-        String title =  getIntent().getExtras().getString(Config.INTENT_EXTRA_TITLE);
-        String imgPath =  getIntent().getExtras().getString(Config.INTENT_EXTRA_CURRENT_COUNT);
+        Bundle b = getIntent().getExtras();
+        String title =  b.getString(Config.INTENT_EXTRA_TITLE);
+        String imgPath =  b.getString(Config.INTENT_EXTRA_CURRENT_COUNT);
+        String date = b.getString(Config.INTENT_EXTRA_DATE);
 
-        if (title != null && imgPath !=null){
+        if (title != null && imgPath !=null && date!=null){
             Logger.i("TITLE : %s , IMG Path : %s",title,imgPath);
+            //상단 텍스트
             detail_title.setText(title);
+            detail_date.setText(date);
 
+            //하단 이미지
             try {
                 Logger.i("imgurl == > %s" ,imgPath);
                 File file = new File(imgPath);
