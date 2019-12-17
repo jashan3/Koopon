@@ -1,41 +1,36 @@
 package com.han.koopon;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
-import android.content.Context;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.han.koopon.Home.HomeFragment;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.firebase.iid.InstanceIdResult;
 
 import com.han.koopon.Login.LoginFragment;
 import com.han.koopon.Main.MainFragment;
-import com.han.koopon.Util.Listitem;
 import com.han.koopon.Util.PFUtil;
-import com.han.koopon.Util.PermissionRequest;
-import com.han.koopon.Util.PhotoUtil;
-import com.han.koopon.Util.StringUtil;
+import com.han.koopon.Util.PushUtil;
+import com.han.koopon.Util.SchedulerUtil;
 import com.orhanobut.logger.Logger;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,16 +42,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mainFrame = findViewById(R.id.mainFrame);
-
+        askpermission();
         String id = PFUtil.getPreferenceString(this,PFUtil.AUTO_LOGIN_ID);
         Logger.i("information : %s",id);
-        if (TextUtils.isEmpty(id)){
+        if (id == null){
+            getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, LoginFragment.newInstance()).commit();
+        } else if ("".equals(id)){
             getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, LoginFragment.newInstance()).commit();
         }
         else {
             getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, MainFragment.newInstance()).commit();
+            SchedulerUtil.runScheudlerAlways(this);
         }
-
+        PushUtil.createNotificationChannel(this);
     }
 
     private long backKeyPressedTime = 0;
@@ -76,23 +74,22 @@ public class MainActivity extends AppCompatActivity {
             toast.cancel();
         }
     }
-//    @Override
-//    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
-//        Logger.i("onActivityResult "+requestCode +","+requestCode);
-//        if (requestCode == 1000 && resultCode == RESULT_OK) {
-//            try {
-//                Uri uri = data.getData();
-//
-////                String struri =  PhotoUtil.getRealPathFromURI_API19(this,uri);
-//                Logger.i(uri.getPath());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
-//
-//        if (requestCode == 1000 && resultCode == RESULT_CANCELED) {
-//            Toast.makeText(this, "선택 취소", Toast.LENGTH_SHORT).show();
-//        }
-//    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Logger.i("onNewIntent : ");
+    }
+
+    private void askpermission(){
+        try {
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1111);
+            } else {
+                //granted
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

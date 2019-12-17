@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">koopon</string>
+    <string name="channel_name">koopon</string>
+    <string name="channel_description">channel_description</string>
+    <string name="channel_id">CHANNEL_ID</string>
 </resources>

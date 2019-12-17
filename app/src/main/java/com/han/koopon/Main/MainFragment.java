@@ -132,31 +132,31 @@ public class MainFragment extends Fragment {
         spinner= view.findViewById(R.id.spinner);
         ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.spinnerArray, R.layout.layout_spinner_item);
         spinnerAdapter.setDropDownViewResource(R.layout.layout_spinner_item);
-        spinner.setAdapter(spinnerAdapter);
+//        spinner.setAdapter(spinnerAdapter);
 
-        //spinner 이벤트 리스너
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                  Logger.i("postion : %d",spinner.getSelectedItemPosition());
-                switch (spinner.getSelectedItemPosition()){
-                    case 0:
-                        Collections.reverse(couponList);
-                        adapter.updateItems(couponList);
-                        adapter.notifyDataSetChanged();
-                        break;
-
-                    case 1:
-                        Collections.reverse(couponList);
-                        adapter.updateItems(couponList);
-                        adapter.notifyDataSetChanged();
-                        break;
-                }
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-            }
-        });
+//        //spinner 이벤트 리스너
+//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+//                  Logger.i("postion : %d",spinner.getSelectedItemPosition());
+//                switch (spinner.getSelectedItemPosition()){
+//                    case 0:
+//                        Collections.reverse(couponList);
+//                        adapter.updateItems(couponList);
+//                        adapter.notifyDataSetChanged();
+//                        break;
+//
+//                    case 1:
+//                        Collections.reverse(couponList);
+//                        adapter.updateItems(couponList);
+//                        adapter.notifyDataSetChanged();
+//                        break;
+//                }
+//            }
+//            @Override
+//            public void onNothingSelected(AdapterView<?> adapterView) {
+//            }
+//        });
 
     }
 
@@ -228,9 +228,9 @@ public class MainFragment extends Fragment {
                         }
 
                         if (date1.compareTo(date2) > 0) {
-                            return 1;
-                        } else if (date1.compareTo(date2) < 0) {
                             return -1;
+                        } else if (date1.compareTo(date2) < 0) {
+                            return 1;
                         } else {
                             return 0;
                         }
