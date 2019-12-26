@@ -45,7 +45,7 @@ public class MainDetailActivity extends AppCompatActivity {
             Logger.i("TITLE : %s , IMG Path : %s",title,imgPath);
             //상단 텍스트
             detail_title.setText(title);
-            detail_date.setText(date);
+            detail_date.setText("~ "+date+"까지");
 
             //하단 이미지
             try {

@@ -22,6 +22,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -122,41 +123,12 @@ public class MainFragment extends Fragment {
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(lm);
         rv.setAdapter(adapter);
+        new ItemTouchHelper(adapter.itemTouchHelperCallback).attachToRecyclerView(rv);
 
         add_btn  = view.findViewById(R.id.add_btn);
         add_btn.setOnClickListener((v)->{
             kooponDialog.newInstance().show(getFragmentManager(),"");
         });
-
-        //Spinner객체 생성
-        spinner= view.findViewById(R.id.spinner);
-        ArrayAdapter spinnerAdapter = ArrayAdapter.createFromResource(getContext(), R.array.spinnerArray, R.layout.layout_spinner_item);
-        spinnerAdapter.setDropDownViewResource(R.layout.layout_spinner_item);
-//        spinner.setAdapter(spinnerAdapter);
-
-//        //spinner 이벤트 리스너
-//        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                  Logger.i("postion : %d",spinner.getSelectedItemPosition());
-//                switch (spinner.getSelectedItemPosition()){
-//                    case 0:
-//                        Collections.reverse(couponList);
-//                        adapter.updateItems(couponList);
-//                        adapter.notifyDataSetChanged();
-//                        break;
-//
-//                    case 1:
-//                        Collections.reverse(couponList);
-//                        adapter.updateItems(couponList);
-//                        adapter.notifyDataSetChanged();
-//                        break;
-//                }
-//            }
-//            @Override
-//            public void onNothingSelected(AdapterView<?> adapterView) {
-//            }
-//        });
 
     }
 
@@ -227,15 +199,35 @@ public class MainFragment extends Fragment {
                             Logger.e("casting error");
                         }
 
-                        if (date1.compareTo(date2) > 0) {
+
+                        //date1이 클때 && 아직 사용 안햇을떄.&& !coupon1.isUse
+                        if (date1.compareTo(date2) > 0 ) {
                             return -1;
-                        } else if (date1.compareTo(date2) < 0) {
+                        }
+                        //date1이 작을떄
+                        else if (date1.compareTo(date2) < 0) {
                             return 1;
-                        } else {
+                        }
+                        //같을때
+                        else {
                             return 0;
                         }
                     }
                 });
+
+                Collections.sort(couponList, new Comparator<Coupon>() {
+                    @Override
+                    public int compare(Coupon coupon1, Coupon coupon2) {
+                        //date1이 클때 && 아직 사용 안햇을떄.&& !coupon1.isUse
+                        if (!coupon1.isUse ) {
+                            return -1;
+                        }
+                        else {
+                            return 1;
+                        }
+                    }
+                });
+
                 adapter.updateItems(couponList);
                 adapter.notifyDataSetChanged();
                 main_progress_bar.setVisibility(View.GONE);

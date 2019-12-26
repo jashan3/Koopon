@@ -2,10 +2,13 @@ package com.han.koopon.Main;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
@@ -22,6 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.han.koopon.Config;
@@ -78,6 +82,7 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
         this.itemLongClickListner = itemLongClickListner;
         userID = PFUtil.getPreferenceString(context,PFUtil.AUTO_LOGIN_ID);
         userID = StringUtil.emailToStringID(userID);
+
     }
 
     @NonNull
@@ -135,7 +140,23 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
             });
 
             holder.view.setOnLongClickListener(v->{
-
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                        context);
+                alertDialogBuilder
+                        .setMessage("삭제하시겠습니까?")
+                        .setCancelable(false)
+                        .setPositiveButton("삭제",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        removeItem(position);
+                                    }
+                                })
+                        .setNegativeButton("취소",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int id) {
+                                        dialog.cancel();
+                                    }
+                                }).show();
                 return true;
             });
 
@@ -170,6 +191,32 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
     public void updateList( List<Coupon> list){
         this.list = list;
     }
+    public void removeItem(int p){
+        Coupon c = null;
+        c = list.get(p);
+        FireBaseQuery.deleteFBNeedKey(StringUtil.base64(c.imgURL),c,userID);
+        notifyDataSetChanged();
+    }
+
+    ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            Logger.i("onMove");
+            return true;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            Logger.i("onSwiped");
+        }
+
+        @Override
+        public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+            Logger.i("onChildDraw");
+        }
+    };
+
+
 
     private Bitmap stringToBitmap(String path){
         File imgFile =null;

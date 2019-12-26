@@ -22,11 +22,11 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.han.koopon.Home.HomeFragment;
+
 import com.han.koopon.Main.MainFragment;
 import com.han.koopon.R;
 import com.han.koopon.Util.PFUtil;
-import com.han.koopon.dialog.kooponDialog;
+
 
 import static androidx.constraintlayout.widget.Constraints.TAG;
 
@@ -54,15 +54,12 @@ public class LoginFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.login_fragment, container, false);
         bindingViews(view);
-
-
         return view;
     }
     private void bindingViews( View view){
         id_tf = view.findViewById(R.id.login_id_tf);
         password_tf= view.findViewById(R.id.login_password_tf);
         progress_bar = view.findViewById(R.id.progress_bar);
-
         view.findViewById(R.id.login_button).setOnClickListener(loginListner);
     }
 
@@ -70,7 +67,6 @@ public class LoginFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         mViewModel = ViewModelProviders.of(this).get(LoginViewModel.class);
-
     }
 
     public void updateUI(FirebaseUser user){
@@ -110,6 +106,7 @@ public class LoginFragment extends Fragment {
 
                             getActivity().getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
                             getActivity().getSupportFragmentManager().beginTransaction()
+                                    .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                                     .replace(R.id.mainFrame, MainFragment.newInstance() )
                                     .addToBackStack(null)
                                     .commit();

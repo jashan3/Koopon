@@ -42,6 +42,14 @@ public class FireBaseQuery {
         mDatabase.updateChildren(childUpdates);
     }
 
+    public static void deleteFBNeedKey(String key,Coupon coupon,String userID){
+        Logger.i("암호화된 key %s",key);
+        Map<String, Object> postValues = coupon.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/"+ROOT+"/"+userID+"/"+TYPE1+"/" +key, null);
+        mDatabase.updateChildren(childUpdates);
+    }
+
     public static void  selectOnceFB(String userID) {
         List list = new ArrayList();
         mDatabase.child(ROOT).child(userID).child(TYPE1).addListenerForSingleValueEvent(new ValueEventListener() {

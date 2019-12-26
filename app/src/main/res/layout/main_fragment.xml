@@ -38,19 +38,19 @@
             </RelativeLayout>
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.CollapsingToolbarLayout>
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:background="@android:color/holo_blue_dark">
-        <Spinner
-            android:id="@+id/spinner"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:spinnerMode="dropdown"
-            android:overlapAnchor="false"
-            android:backgroundTint="@android:color/white"
-            android:layout_alignParentEnd="true"/>
-    </RelativeLayout>
+<!--    <RelativeLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:background="@android:color/holo_blue_dark">-->
+<!--        <Spinner-->
+<!--            android:id="@+id/spinner"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:spinnerMode="dropdown"-->
+<!--            android:overlapAnchor="false"-->
+<!--            android:backgroundTint="@android:color/white"-->
+<!--            android:layout_alignParentEnd="true"/>-->
+<!--    </RelativeLayout>-->
 
 </com.google.android.material.appbar.AppBarLayout>
 
