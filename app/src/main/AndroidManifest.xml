@@ -15,13 +15,18 @@
         android:supportsRtl="true"
         android:name=".Config"
         android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
-        <activity android:name=".MainActivity"
+
+        <activity android:name=".IntroActivity"
             android:theme="@style/BaseTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+
+        <activity android:name=".MainActivity"
+            android:theme="@style/BaseTheme">
+
         </activity>
         <activity android:name=".MainDetail.MainDetailActivity"
             android:theme="@style/BaseTheme"/>

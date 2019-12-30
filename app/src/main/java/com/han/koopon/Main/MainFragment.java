@@ -96,12 +96,12 @@ public class MainFragment extends Fragment {
         userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
         userID = StringUtil.emailToStringID(userID);
 
-        boolean isFolderExist =  PhotoUtil.isFolderExist(getContext(),folderName);
-        if (isFolderExist){
-            Toast.makeText(getContext(), "폴더확인", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(getContext(), "'바코드' 이름으로 폴더를 생성해주세요.", Toast.LENGTH_SHORT).show();
-        }
+//        boolean isFolderExist =  PhotoUtil.isFolderExist(getContext(),folderName);
+//        if (isFolderExist){
+//            Toast.makeText(getContext(), "폴더확인", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(getContext(), "'바코드' 이름으로 폴더를 생성해주세요.", Toast.LENGTH_SHORT).show();
+//        }
         super.onAttach(context);
     }
 
@@ -111,7 +111,7 @@ public class MainFragment extends Fragment {
         bindView(view);
 
         Logger.i("id : %s",userID);
-//        selectOnceFB(userID);
+
         selectAlwaysFB(userID);
         return  view;
     }

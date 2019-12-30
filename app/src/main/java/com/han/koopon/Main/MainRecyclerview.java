@@ -34,6 +34,7 @@ import com.han.koopon.R;
 import com.han.koopon.Util.PFUtil;
 import com.han.koopon.Util.PhotoUtil;
 import com.han.koopon.Util.StringUtil;
+import com.han.koopon.dialog.KooponAlert;
 import com.orhanobut.logger.Logger;
 
 import java.io.File;
@@ -135,28 +136,17 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
                 intent.putExtra(Config.INTENT_EXTRA_CURRENT_COUNT,imgurl);
                 intent.putExtra(Config.INTENT_EXTRA_DATE,cp.date);
                 intent.putExtra(Config.INTENT_EXTRA_BODY,cp.coupon_body);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, v, "transition_item");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.item_imageview, "transition_item");
                 context.startActivity(intent, options.toBundle());
             });
 
             holder.view.setOnLongClickListener(v->{
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                        context);
-                alertDialogBuilder
-                        .setMessage("삭제하시겠습니까?")
-                        .setCancelable(false)
-                        .setPositiveButton("삭제",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        removeItem(position);
-                                    }
-                                })
-                        .setNegativeButton("취소",
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int id) {
-                                        dialog.cancel();
-                                    }
-                                }).show();
+                KooponAlert ka = new KooponAlert(context);
+                ka.setListner((views)->{
+                    removeItem(position);
+                    ka.dismiss();
+                });
+                ka.show();
                 return true;
             });
 

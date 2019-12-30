@@ -25,7 +25,8 @@
                     android:gravity="center"
                     android:textSize="24sp"
                     android:textColor="@android:color/white"
-                    android:text="쿠폰"/>
+                    android:transitionName="title_transition"
+                    android:text="Koopon"/>
                 <ImageView
                     android:id="@+id/add_btn"
                     android:layout_width="40dp"
