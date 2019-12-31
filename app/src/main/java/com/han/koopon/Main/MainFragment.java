@@ -47,6 +47,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
+
 import static android.app.Activity.RESULT_CANCELED;
 import static android.app.Activity.RESULT_OK;
 
@@ -83,15 +85,6 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onAttach(@NonNull Context context) {
-
-//        CouponVO couponVO = new CouponVO();
-//        couponVO.setCoupon_title("sdfgsdfgdsfgsdfgg 111111111.");
-//        couponVO.setCoupon_body("설명");
-//        couponVO.setImgURL("moimage");
-//        couponVO.setDate("날짜");
-//        couponVO.setUse(false);
-//        writeFirebase(couponVO);
-
         couponList = new ArrayList();
         userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
         userID = StringUtil.emailToStringID(userID);
@@ -123,8 +116,8 @@ public class MainFragment extends Fragment {
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(lm);
         rv.setAdapter(adapter);
+        rv.setItemAnimator(new SlideInDownAnimator());
         new ItemTouchHelper(adapter.itemTouchHelperCallback).attachToRecyclerView(rv);
-
         add_btn  = view.findViewById(R.id.add_btn);
         add_btn.setOnClickListener((v)->{
             kooponDialog.newInstance().show(getFragmentManager(),"");
@@ -230,6 +223,7 @@ public class MainFragment extends Fragment {
 
                 adapter.updateItems(couponList);
                 adapter.notifyDataSetChanged();
+                adapter.notifyItemInserted(0);
                 main_progress_bar.setVisibility(View.GONE);
             }
 
