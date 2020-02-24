@@ -23,10 +23,11 @@
     </style>
 
 
-    <style name="MyButton" parent="Widget.AppCompat.Button.Colored">
+    <style name="MyButton" parent="Widget.AppCompat.Button.Borderless.Colored">
         <item name="android:layout_margin">0dip</item>
         <item name="android:backgroundTint">@android:color/holo_blue_dark</item>
         <item name="colorButtonNormal">@android:color/holo_blue_dark</item>
+        <item name="android:elevation">20dp</item>
     </style>
 
     <style name="text_title">

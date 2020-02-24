@@ -18,34 +18,34 @@ import androidx.annotation.Nullable;
 
 import com.han.koopon.R;
 
-public class KooponAlert extends Dialog implements View.OnClickListener {
+public  class KooponAlert extends Dialog implements View.OnClickListener {
+
+    public interface onKPClickListener{
+         void onPositive(View view);
+         void onNegetive(View view);
+    }
+
     private LinearLayout ll_titleContainer,ll_btnContainer;
     private ImageView iv_icon;
     private TextView tv_title,tv_body;
     private ImageButton ib_close;
     private Button btn_del,btn_cancel;
-    private View.OnClickListener delListner;
+
+    private onKPClickListener kpListener;
 
     public KooponAlert(@NonNull Context context) {
         super(context);
     }
 
-    public KooponAlert(@NonNull Context context, int themeResId) {
-        super(context, themeResId);
+    public KooponAlert(@NonNull Context context,onKPClickListener kpListener) {
+        super(context);
+        this.kpListener = kpListener;
     }
 
-    protected KooponAlert(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
-        super(context, cancelable, cancelListener);
-    }
 
-//    public interface CustomDialogListener{
-//        public void onPositiveClicked(View.OnClickListener v);
-//    }
-//
-//    //호출할 리스너
-//    public void setDialogListener(CustomDialogListener customDialogListener){
-//        this.customDialogListener = customDialogListener;
-//    }
+    public  static KooponAlert from( Context context,onKPClickListener kpListener){
+        return  new KooponAlert(context,kpListener);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,10 +57,6 @@ public class KooponAlert extends Dialog implements View.OnClickListener {
 
         bindView();
         settingListner();
-    }
-
-    public void setListner(View.OnClickListener v){
-        this.delListner = v;
     }
 
     private void bindView(){
@@ -78,12 +74,22 @@ public class KooponAlert extends Dialog implements View.OnClickListener {
 
     private void settingListner(){
         ib_close.setOnClickListener(this);
-        btn_del.setOnClickListener(delListner);
+        btn_del.setOnClickListener(this);
         btn_cancel.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View view) {
+
         dismiss();
+
+       switch (view.getId()){
+           case R.id.dialog_btn_del:
+               kpListener.onPositive(view);
+               break;
+           case R.id.dialog_btn_cancel:
+               kpListener.onNegetive(view);
+               break;
+       }
     }
 }

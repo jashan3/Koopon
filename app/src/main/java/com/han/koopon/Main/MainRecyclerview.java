@@ -13,6 +13,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.transition.TransitionManager;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
@@ -32,8 +32,8 @@ import com.han.koopon.Config;
 import com.han.koopon.MainDetail.MainDetailActivity;
 import com.han.koopon.R;
 import com.han.koopon.Util.PFUtil;
-import com.han.koopon.Util.PhotoUtil;
 import com.han.koopon.Util.StringUtil;
+import com.han.koopon.animation.Stagger;
 import com.han.koopon.dialog.KooponAlert;
 import com.orhanobut.logger.Logger;
 
@@ -42,7 +42,9 @@ import java.util.List;
 
 public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.MainHolder> {
     private SparseBooleanArray mSelectedItems = new SparseBooleanArray(0);
-    //inner class
+    /**
+     * inner class
+     */
     class MainHolder extends RecyclerView.ViewHolder {
         View view;
         TextView item_content1;
@@ -59,13 +61,10 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
             rv_item_checkbox = view.findViewById(R.id.rv_item_checkbox);
         }
 
-        public void setListner(CompoundButton.OnCheckedChangeListener listner){
-            rv_item_checkbox.setOnCheckedChangeListener(listner);
+        private void bind(){
+
         }
 
-        public void setClickListener(View.OnClickListener listener){
-            view.setOnClickListener(listener);
-        }
     }
 
     //var
@@ -91,13 +90,6 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
     public MainHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.recycle_main_item2,parent,false);
         MainHolder mh = new MainHolder(view);
-//        mh.setClickListener(v->{
-//            Logger.i("ccc");
-//            Intent intent = new Intent(context, MainDetailActivity.class);
-//            intent.putExtra(Config.INTENT_EXTRA_TITLE,"INTENT_EXTRA_TITLE");
-//            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, v, "transition_item");
-//            context.startActivity(intent, options.toBundle());
-//        });
         return mh;
     }
 
@@ -128,6 +120,7 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
             holder.item_content1.setText(list.get(position).coupon_title);
             holder.item_content2.setText(list.get(position).date);
             holder.rv_item_checkbox.setChecked(list.get(position).isUse);
+
             holder.view.setOnClickListener(v->{
                 Intent intent = new Intent(context, MainDetailActivity.class);
                 Coupon cp = null;
@@ -136,17 +129,24 @@ public class MainRecyclerview extends RecyclerView.Adapter<MainRecyclerview.Main
                 intent.putExtra(Config.INTENT_EXTRA_CURRENT_COUNT,imgurl);
                 intent.putExtra(Config.INTENT_EXTRA_DATE,cp.date);
                 intent.putExtra(Config.INTENT_EXTRA_BODY,cp.coupon_body);
+
+
                 ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity) context, holder.item_imageview, "transition_item");
                 context.startActivity(intent, options.toBundle());
             });
 
             holder.view.setOnLongClickListener(v->{
-                KooponAlert ka = new KooponAlert(context);
-                ka.setListner((views)->{
-                    removeItem(position);
-                    ka.dismiss();
-                });
-                ka.show();
+                KooponAlert.from(context, new KooponAlert.onKPClickListener() {
+                    @Override
+                    public void onPositive(View view) {
+                        removeItem(position);
+                    }
+
+                    @Override
+                    public void onNegetive(View view) {
+
+                    }
+                }).show();
                 return true;
             });
 

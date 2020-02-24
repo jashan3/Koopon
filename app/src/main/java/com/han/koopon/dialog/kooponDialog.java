@@ -5,16 +5,22 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -33,12 +39,14 @@ import com.orhanobut.logger.Logger;
 import java.util.Calendar;
 
 
-public class kooponDialog extends DialogFragment {
+public class kooponDialog extends DialogFragment implements ScrollView.OnScrollChangeListener {
     
     private EditText koopon_edit_date,koopon_edit_title;
     private ImageView koopon_imgv,close_btn;
     private Button koopon_add_btn;
     private DatePicker datePicker;
+    private ScrollView scrollView;
+
     private final static int ALBUM_REQUEST_CODE = 1001;
 
     private  String uriPath;
@@ -50,7 +58,20 @@ public class kooponDialog extends DialogFragment {
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        getActivity().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+//        getActivity().getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+
+        // the content
+        final RelativeLayout root = new RelativeLayout(getActivity());
+        root.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+
+        // creating the fullscreen dialog
+        final Dialog dialog = new Dialog(getActivity());
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(root);
+        dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
+        dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
+
         return super.onCreateDialog(savedInstanceState);
     }
 
@@ -58,13 +79,13 @@ public class kooponDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.dialog_koopon_edit,container,false);
-        ViewGroup.LayoutParams params = getDialog().getWindow().getAttributes();
-        params.width = ViewGroup.LayoutParams.MATCH_PARENT;
-        params.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        getDialog().getWindow().setAttributes((android.view.WindowManager.LayoutParams) params);
-
-        bindView(view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        bindView(view);
     }
 
     private void bindView(View v){
@@ -74,8 +95,9 @@ public class kooponDialog extends DialogFragment {
         koopon_edit_date.setEnabled(false);
         koopon_imgv = v.findViewById(R.id.koopon_imgv);
         koopon_add_btn = v.findViewById(R.id.koopon_add_btn);
+        scrollView= v.findViewById(R.id.scrollView);
 
-
+        scrollView.setOnScrollChangeListener(this);
         //이미지 불러오기
         koopon_imgv.setOnClickListener(view -> {
 //            Toast.makeText(mcontext, "image call!", Toast.LENGTH_SHORT).show();
@@ -138,7 +160,6 @@ public class kooponDialog extends DialogFragment {
 
             String userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
             userID = StringUtil.emailToStringID(userID);
-//            FireBaseQuery.insertFB(coupon,userID);
             FireBaseQuery.insertFBNeedKey( StringUtil.base64(uriPath),coupon,userID);
             dismiss();
         });
@@ -175,6 +196,10 @@ public class kooponDialog extends DialogFragment {
     }
 
 
+    @Override
+    public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
 
-
+    }
 }

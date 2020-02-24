@@ -1,29 +1,15 @@
 package com.han.koopon;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
-import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
 
 import android.Manifest;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.FrameLayout;
 import android.widget.Toast;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
 import com.han.koopon.Login.LoginFragment;
 import com.han.koopon.Main.MainFragment;
@@ -45,16 +31,27 @@ public class MainActivity extends AppCompatActivity {
         askpermission();
         String id = PFUtil.getPreferenceString(this,PFUtil.AUTO_LOGIN_ID);
         Logger.i("information : %s",id);
+
         if (id == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, LoginFragment.newInstance()).commit();
-        } else if ("".equals(id)){
-            getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, LoginFragment.newInstance()).commit();
+            toFragment(LoginFragment.newInstance());
+        }
+        else if ("".equals(id)){
+            toFragment(LoginFragment.newInstance());
         }
         else {
-            getSupportFragmentManager().beginTransaction().replace(R.id.mainFrame, MainFragment.newInstance()).commit();
+            toFragment(MainFragment.newInstance());
             SchedulerUtil.runScheudlerAlways(this);
         }
+
         PushUtil.createNotificationChannel(this);
+    }
+
+    private void toFragment(Fragment fragment){
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+                .replace(R.id.mainFrame, fragment)
+                .commit();
     }
 
     private long backKeyPressedTime = 0;

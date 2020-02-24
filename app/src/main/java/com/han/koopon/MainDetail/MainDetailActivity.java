@@ -17,7 +17,6 @@ import java.io.File;
 
 public class MainDetailActivity extends AppCompatActivity {
 
-
     private ImageView detail_img;
     private TextView detail_title,detail_date;
 

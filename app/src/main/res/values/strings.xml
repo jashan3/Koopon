@@ -3,4 +3,5 @@
     <string name="channel_name">koopon</string>
     <string name="channel_description">channel_description</string>
     <string name="channel_id">CHANNEL_ID</string>
+    <string name="add">Add</string>
 </resources>

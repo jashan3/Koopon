@@ -34,6 +34,7 @@
     </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <LinearLayout
@@ -70,6 +71,7 @@
                     android:inputType="text"
                     style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"/>
             </com.google.android.material.textfield.TextInputLayout>
+
             <DatePicker
                 android:id="@+id/koopon_datePicker"
                 android:layout_width="match_parent"

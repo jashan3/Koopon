@@ -22,19 +22,25 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.transition.Transition;
+import androidx.transition.TransitionManager;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.han.koopon.Config;
 import com.han.koopon.R;
 import com.han.koopon.Util.PFUtil;
 import com.han.koopon.Util.PhotoUtil;
 import com.han.koopon.Util.StringUtil;
+import com.han.koopon.animation.Stagger;
 import com.han.koopon.dialog.kooponDialog;
 import com.orhanobut.logger.Logger;
 
@@ -43,14 +49,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import jp.wasabeef.recyclerview.animators.SlideInDownAnimator;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static android.app.Activity.RESULT_OK;
 
 
 public class MainFragment extends Fragment {
@@ -65,9 +64,10 @@ public class MainFragment extends Fragment {
 
     //widget
     private ImageView add_btn;
-    private RecyclerView rv;
+    public RecyclerView rv;
     private ProgressBar main_progress_bar;
     private  Spinner spinner;
+    private FloatingActionButton fab;
 
     //listener
     MainRecyclerview adapter;
@@ -86,8 +86,10 @@ public class MainFragment extends Fragment {
     @Override
     public void onAttach(@NonNull Context context) {
         couponList = new ArrayList();
-        userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
-        userID = StringUtil.emailToStringID(userID);
+
+
+//        userID = PFUtil.getPreferenceString(getContext(),PFUtil.AUTO_LOGIN_ID);
+//        userID = StringUtil.emailToStringID(userID);
 
 //        boolean isFolderExist =  PhotoUtil.isFolderExist(getContext(),folderName);
 //        if (isFolderExist){
@@ -100,13 +102,17 @@ public class MainFragment extends Fragment {
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =inflater.inflate(R.layout.main_fragment, container, false);
+        return  inflater.inflate(R.layout.main_fragment, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         bindView(view);
 
-        Logger.i("id : %s",userID);
+//        Logger.i("id : %s",userID);
 
-        selectAlwaysFB(userID);
-        return  view;
+        selectAlwaysFB( Config.getCurrentApplication().getUserID());
     }
 
     private void bindView (View view){
@@ -116,7 +122,16 @@ public class MainFragment extends Fragment {
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
         rv.setLayoutManager(lm);
         rv.setAdapter(adapter);
-        rv.setItemAnimator(new SlideInDownAnimator());
+
+        rv.setItemAnimator(new DefaultItemAnimator(){
+            @Override
+            public boolean animateAdd(RecyclerView.ViewHolder holder) {
+                dispatchAddFinished(holder);
+                dispatchAddStarting(holder);
+                return false;
+            }
+        });
+
         new ItemTouchHelper(adapter.itemTouchHelperCallback).attachToRecyclerView(rv);
         add_btn  = view.findViewById(R.id.add_btn);
         add_btn.setOnClickListener((v)->{
@@ -125,49 +140,49 @@ public class MainFragment extends Fragment {
 
     }
 
-    private void initFirebase (String userid){
-        mDatabase.child("koopon").child(userid).child("Coupon").child(userid);
-        mDatabase.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Coupon post = snapshot.child(userid).child("Coupon").getValue(Coupon.class);
-                    try {
-                        Logger.i( post.coupon_title);
+//    private void initFirebase (String userid){
+//        mDatabase.child("koopon").child(userid).child("Coupon").child(userid);
+//        mDatabase.addValueEventListener(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Coupon post = snapshot.child(userid).child("Coupon").getValue(Coupon.class);
+//                    try {
+//                        Logger.i( post.coupon_title);
+//
+//                    }catch (Exception e){
+//                        Logger.e(e.toString());
+//                    }
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                Logger.e("databaseError ==> %s",databaseError.getMessage());
+//            }
+//        });
+//    }
 
-                    }catch (Exception e){
-                        Logger.e(e.toString());
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Logger.e("databaseError ==> %s",databaseError.getMessage());
-            }
-        });
-    }
-
-    public void  selectOnceFB(String userID) {
-        main_progress_bar.setVisibility(View.VISIBLE);
-        mDatabase.child(ROOT).child(userID).child(TYPE1).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Coupon post = snapshot.getValue(Coupon.class);
-                    couponList.add(post);
-                }
-                adapter.updateItems(couponList);
-                adapter.notifyDataSetChanged();
-                main_progress_bar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-    }
+//    public void  selectOnceFB(String userID) {
+//        main_progress_bar.setVisibility(View.VISIBLE);
+//        mDatabase.child(ROOT).child(userID).child(TYPE1).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+//                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+//                    Coupon post = snapshot.getValue(Coupon.class);
+//                    couponList.add(post);
+//                }
+//                adapter.updateItems(couponList);
+//                adapter.notifyDataSetChanged();
+//                main_progress_bar.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onCancelled(@NonNull DatabaseError databaseError) {
+//
+//            }
+//        });
+//    }
 
     public void  selectAlwaysFB(String userID) {
         main_progress_bar.setVisibility(View.VISIBLE);
@@ -222,8 +237,11 @@ public class MainFragment extends Fragment {
                 });
 
                 adapter.updateItems(couponList);
+                Transition stagger = new Stagger();
+                TransitionManager.beginDelayedTransition(rv,stagger);
                 adapter.notifyDataSetChanged();
-                adapter.notifyItemInserted(0);
+
+
                 main_progress_bar.setVisibility(View.GONE);
             }
 
