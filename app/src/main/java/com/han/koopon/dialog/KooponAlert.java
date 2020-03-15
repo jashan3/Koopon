@@ -32,6 +32,7 @@ public  class KooponAlert extends Dialog implements View.OnClickListener {
     private Button btn_del,btn_cancel;
 
     private onKPClickListener kpListener;
+    private String title,body,ok,cancel;
 
     public KooponAlert(@NonNull Context context) {
         super(context);
@@ -42,8 +43,18 @@ public  class KooponAlert extends Dialog implements View.OnClickListener {
         this.kpListener = kpListener;
     }
 
+    public KooponAlert(@NonNull Context context,String title,String body,String ok,String cancel,onKPClickListener kpListener) {
+        super(context);
+        this.title = title;
+        this.body = body;
+        this.ok = ok;
+        this.cancel = cancel;
+        this.kpListener = kpListener;
+    }
 
-    public  static KooponAlert from( Context context,onKPClickListener kpListener){
+
+
+    public static KooponAlert from( Context context,onKPClickListener kpListener){
         return  new KooponAlert(context,kpListener);
     }
 
@@ -70,6 +81,24 @@ public  class KooponAlert extends Dialog implements View.OnClickListener {
         ll_btnContainer = findViewById(R.id.dialog_btn_container);
         btn_del = findViewById(R.id.dialog_btn_del);
         btn_cancel = findViewById(R.id.dialog_btn_cancel);
+
+        if(title !=null){
+            tv_title.setText(title);
+        }
+
+        if(tv_body !=null){
+            tv_body.setText(body);
+        }
+
+        if(ok !=null){
+            btn_del.setText(ok);
+        }
+
+        if(cancel !=null){
+            btn_cancel.setText(cancel);
+        }
+
+
     }
 
     private void settingListner(){

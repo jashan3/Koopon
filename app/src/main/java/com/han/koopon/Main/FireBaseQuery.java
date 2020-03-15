@@ -2,6 +2,8 @@ package com.han.koopon.Main;
 
 import androidx.annotation.NonNull;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -40,6 +42,29 @@ public class FireBaseQuery {
         Map<String, Object> childUpdates = new HashMap<>();
         childUpdates.put("/"+ROOT+"/"+userID+"/"+TYPE1+"/" +key, postValues);
         mDatabase.updateChildren(childUpdates);
+    }
+
+    public interface InsertCallback{
+        void onSuccess();
+        void onFail( Exception e);
+    }
+    public static void insertFBNeedKeyWithCallback(String key,Coupon coupon,String userID,InsertCallback callback){
+        Logger.i("암호화된 key %s",key);
+        Map<String, Object> postValues = coupon.toMap();
+        Map<String, Object> childUpdates = new HashMap<>();
+        childUpdates.put("/"+ROOT+"/"+userID+"/"+TYPE1+"/" +key, postValues);
+        mDatabase.updateChildren(childUpdates)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                callback.onSuccess();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                callback.onFail(e);
+            }
+        });
     }
 
     public static void deleteFBNeedKey(String key,Coupon coupon,String userID){

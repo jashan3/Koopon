@@ -16,7 +16,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:name=".Config"
-        android:theme="@style/Theme.MaterialComponents.Light.NoActionBar">
+        android:theme="@style/BaseTheme">
 
         <activity android:name=".IntroActivity"
             android:theme="@style/BaseTheme">
@@ -32,6 +32,7 @@
         </activity>
         <activity android:name=".MainDetail.MainDetailActivity"
             android:theme="@style/BaseTheme"/>
+        <activity android:name=".addCoupon.AddCouponActivity" />
 
         <service
             android:name=".push.MyFirebaseMessagingService"

@@ -1,6 +1,8 @@
 package com.han.koopon.Main;
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,6 +18,7 @@ import android.widget.DatePicker;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -40,6 +43,7 @@ import com.han.koopon.R;
 import com.han.koopon.Util.PFUtil;
 import com.han.koopon.Util.PhotoUtil;
 import com.han.koopon.Util.StringUtil;
+import com.han.koopon.addCoupon.AddCouponActivity;
 import com.han.koopon.animation.Stagger;
 import com.han.koopon.dialog.kooponDialog;
 import com.orhanobut.logger.Logger;
@@ -63,11 +67,11 @@ public class MainFragment extends Fragment {
     private static final int PERMISSION_CODE = 1000;
 
     //widget
-    private ImageView add_btn;
+    private FloatingActionButton add_btn;
     public RecyclerView rv;
+    private TextView main_frg_title;
     private ProgressBar main_progress_bar;
     private  Spinner spinner;
-    private FloatingActionButton fab;
 
     //listener
     MainRecyclerview adapter;
@@ -117,6 +121,7 @@ public class MainFragment extends Fragment {
 
     private void bindView (View view){
         rv = view.findViewById(R.id.main_rv);
+        main_frg_title= view.findViewById(R.id.main_frg_title);
         main_progress_bar = view.findViewById(R.id.main_progress_bar);
         adapter = new MainRecyclerview(getContext(),couponList,itemClickListner,itemLongClickListner);
         LinearLayoutManager lm = new LinearLayoutManager(getContext());
@@ -135,7 +140,11 @@ public class MainFragment extends Fragment {
         new ItemTouchHelper(adapter.itemTouchHelperCallback).attachToRecyclerView(rv);
         add_btn  = view.findViewById(R.id.add_btn);
         add_btn.setOnClickListener((v)->{
-            kooponDialog.newInstance().show(getFragmentManager(),"");
+//            kooponDialog.newInstance().show(getFragmentManager(),"");
+
+            ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(getActivity(),main_frg_title, "transition_item");
+            Intent intent = new Intent(getContext(), AddCouponActivity.class);
+            startActivity(intent,options.toBundle());
         });
 
     }

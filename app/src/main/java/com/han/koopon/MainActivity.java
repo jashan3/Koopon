@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private void toFragment(Fragment fragment){
         getSupportFragmentManager()
                 .beginTransaction()
-                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
+//                .setCustomAnimations(R.anim.enter_from_right, R.anim.exit_to_left, R.anim.enter_from_left, R.anim.exit_to_right)
                 .replace(R.id.mainFrame, fragment)
                 .commit();
     }
@@ -77,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         Logger.i("onNewIntent : ");
     }
+
 
     private void askpermission(){
         try {

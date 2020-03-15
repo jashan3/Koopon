@@ -64,8 +64,9 @@ public class IntroActivity extends AppCompatActivity {
     private void startMain(){
         Intent i = new Intent(IntroActivity.this,MainActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(IntroActivity.this, findViewById(R.id.intro_tv),"title_transition");
-        startActivity(i, options.toBundle());
+//        ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(IntroActivity.this, findViewById(R.id.intro_tv),"title_transition");
+//        startActivity(i, options.toBundle());
+        startActivity(i);
         finish();
     }
 }

@@ -9,4 +9,6 @@
     <color name="card_background">#e0e0e0</color>
     <color name="dark_scrim">#66333333</color>
     <color name="navigationBarColor">@color/dark_scrim</color>
+
+    <color name="light_gray">#f9f9f9</color>
 </resources>

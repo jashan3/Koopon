@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/light_gray"
+    android:layout_height="match_parent">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/holo_blue_dark">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="쿠폰 추가"
+                android:textSize="24dp"
+                android:textColor="#ffffff"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"
+                android:transitionName="title_transition"
+                android:gravity="center"/>
+            <ImageView
+                android:id="@+id/close_btn"
+                android:cropToPadding="true"
+                android:padding="10dp"
+                android:scaleType="centerInside"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_close_black_24dp"
+                android:tint="#ffffff"
+                android:layout_alignParentEnd="true" />
+        </RelativeLayout>
+    </androidx.appcompat.widget.Toolbar>
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/koopon_add_btn"
+        android:layout_below="@+id/toolbar">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2sp"
+                style="@style/TextLabel"
+                android:hint="제목">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/koopon_edit_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="2sp"
+                style="@style/TextLabel"
+                android:hint="날짜">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/koopon_edit_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <DatePicker
+                android:id="@+id/koopon_datePicker"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:datePickerMode="calendar"
+                android:layout_margin="40dp"
+                android:headerBackground="@android:color/holo_blue_dark"
+                android:backgroundTint="@android:color/holo_blue_dark"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="이미지"
+                style="@style/title_text"
+                android:layout_marginLeft="20dp"/>
+            <ImageView
+                android:id="@+id/koopon_imgv"
+                android:layout_width="match_parent"
+                android:layout_height="400dp"
+                android:layout_margin="10sp"
+                android:foreground="@drawable/ripple_effect"
+                android:src="@drawable/ic_photo_album_black_24dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="메모"
+                style="@style/title_text"
+                android:layout_marginLeft="20dp"/>
+            <EditText
+                android:id="@+id/memo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="10sp"
+                android:inputType="textMultiLine"
+                android:gravity="start"
+                android:background="@drawable/top_border"
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginBottom="40dp"
+                style="@style/text_body"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/koopon_add_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@android:color/holo_blue_dark"
+        android:layout_alignParentBottom="true"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:text="추가"/>
+</RelativeLayout>
